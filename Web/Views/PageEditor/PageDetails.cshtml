@@ -1,0 +1,94 @@
+﻿@using Cydon.Data.CySys
+@using Web.Base;
+@{
+    ViewBag.Title = "PageDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    List<string> addableTypes = (List<string>)ViewData["AddableParts"];
+}
+@model Cydon.Data.CySys.Page
+
+<span>
+    <a href="~/PageEditor/CountryIndex/@Model.CountryID" class="btn btn-primary"><span class="fas fa-chevron-left"></span> Country Editor</a>
+    <button class="btn btn-primary float-right" type="button" onclick="$('#AddElement').modal('show');"><span class="fas fa-plus-circle"></span> Add</button>
+</span>
+<h4>Page: @Model.Name</h4>
+
+@{ WriteLiteral(ViewData["Content"]); }
+
+<input type="hidden" value="@Model.CountryID" id="CountryID" />
+
+<div class="modal fade" role="dialog" id="AddElement">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><strong>Add</strong> Element</h4>
+            </div>
+            <div class="modal-body">
+                <form action="." method="post">
+                    <input type="hidden" value="@Model.PageID" name="PageID" />
+                    <div class="form-group">
+                        <label for="ElementType">Element Type</label>
+                        <select class="form-control" id="ElementType" name="ElementType">
+                            <option value=""></option>
+                            @foreach(string type in addableTypes)
+                            {
+                                <option value="@type">@type.ToDisplayString()</option>
+                            }
+                        </select>
+                        <label class="text-danger" data-validate-message-for="ElementType" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-primary" type="button" onclick="$('#AddElement').modal('hide');"><span class="fas fa-ban"></span> Cancel</button>
+                <button class="btn btn-primary" type="button" onclick="modalSave('/PageEditor/PageElementAdd/@Model.CountryID', $(this));"><span class="fas fa-save"></span> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="DeletePageElementModal" class="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><strong>Delete</strong> Page Element</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this Page Element?
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-primary" type="button" onclick="$('#DeletePageElementModal').modal('hide');"><span class="fas fa-ban"></span> Cancel</button>
+                <button class="btn btn-danger" id="DeletePageElementButton" type="button"><span class="fas fa-trash"></span> Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ManagePageElementPermissions" class="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="d-flex align-items-center loading">
+                    <div class="spinner-border" role="status">
+                    </div>
+                    Loading Permissions...
+                </div>
+                <div class="failed d-none">
+                    <span class="fas fa-times-circle text-danger"></span> An error occurred loading permissions
+                </div>
+                <div class="permissionsContent d-none"></div>
+                <input type="hidden" name="PageElementID" />
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-primary" type="button" onclick="$('#ManagePageElementPermissions').modal('hide');" disabled><span class="fas fa-ban"></span> Cancel</button>
+                <button class="btn btn-primary" type="button" disabled onclick="modalSave('/PageEditor/CountryRolePageElementSave/@Model.CountryID', $(this), function() { $('#ManagePageElementPermissions').modal('hide'); });"><span class="fas fa-save"></span> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/cydon.ui.pageeditor.js"></script>    
+}

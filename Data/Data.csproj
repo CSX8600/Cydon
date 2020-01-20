@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A4187BB9-8E2C-4BC7-8B27-3C392317F2A2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Cydon.Data</RootNamespace>
+    <AssemblyName>Data</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base\BaseCache.cs" />
+    <Compile Include="Base\Cache.cs" />
+    <Compile Include="Base\Config.cs" />
+    <Compile Include="Base\Context.cs" />
+    <Compile Include="Base\UniqueAttribute.cs" />
+    <Compile Include="CySys\CacheVersion.cs" />
+    <Compile Include="CySys\Navigation.cs" />
+    <Compile Include="CySys\Page.cs" />
+    <Compile Include="CySys\PageElement.cs" />
+    <Compile Include="Form\FormElementInstance.cs" />
+    <Compile Include="Form\FormInstance.cs" />
+    <Compile Include="Form\Form.cs" />
+    <Compile Include="Form\FormElement.cs" />
+    <Compile Include="Migrations\201908262052406_Security Objects.cs" />
+    <Compile Include="Migrations\201908262052406_Security Objects.Designer.cs">
+      <DependentUpon>201908262052406_Security Objects.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909131728530_More setup objects.cs" />
+    <Compile Include="Migrations\201909131728530_More setup objects.Designer.cs">
+      <DependentUpon>201909131728530_More setup objects.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909132012339_Create Cache Version Table.cs" />
+    <Compile Include="Migrations\201909132012339_Create Cache Version Table.Designer.cs">
+      <DependentUpon>201909132012339_Create Cache Version Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909191223196_Remove CountryRoleAdministrations table.cs" />
+    <Compile Include="Migrations\201909191223196_Remove CountryRoleAdministrations table.Designer.cs">
+      <DependentUpon>201909191223196_Remove CountryRoleAdministrations table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910142033530_Add several uniqueness constraints.cs" />
+    <Compile Include="Migrations\201910142033530_Add several uniqueness constraints.Designer.cs">
+      <DependentUpon>201910142033530_Add several uniqueness constraints.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910231934290_Rename CydonRole to CountryRole.cs" />
+    <Compile Include="Migrations\201910231934290_Rename CydonRole to CountryRole.Designer.cs">
+      <DependentUpon>201910231934290_Rename CydonRole to CountryRole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911201946118_Add Display Order to Page Element.cs" />
+    <Compile Include="Migrations\201911201946118_Add Display Order to Page Element.Designer.cs">
+      <DependentUpon>201911201946118_Add Display Order to Page Element.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001031636161_PageElement Permissions Update.cs" />
+    <Compile Include="Migrations\202001031636161_PageElement Permissions Update.Designer.cs">
+      <DependentUpon>202001031636161_PageElement Permissions Update.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Cache\SessionCache.cs" />
+    <Compile Include="Security\Session.cs" />
+    <Compile Include="Security\SitePermissionUser.cs" />
+    <Compile Include="Security\User.cs" />
+    <Compile Include="Security\UserDiscord.cs" />
+    <Compile Include="World\Country.cs" />
+    <Compile Include="World\CountryRole.cs" />
+    <Compile Include="World\CountryRolePageElement.cs" />
+    <Compile Include="World\CountryRoleUser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CydonConfig.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201908262052406_Security Objects.resx">
+      <DependentUpon>201908262052406_Security Objects.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909131728530_More setup objects.resx">
+      <DependentUpon>201909131728530_More setup objects.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909132012339_Create Cache Version Table.resx">
+      <DependentUpon>201909132012339_Create Cache Version Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909191223196_Remove CountryRoleAdministrations table.resx">
+      <DependentUpon>201909191223196_Remove CountryRoleAdministrations table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910142033530_Add several uniqueness constraints.resx">
+      <DependentUpon>201910142033530_Add several uniqueness constraints.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910231934290_Rename CydonRole to CountryRole.resx">
+      <DependentUpon>201910231934290_Rename CydonRole to CountryRole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911201946118_Add Display Order to Page Element.resx">
+      <DependentUpon>201911201946118_Add Display Order to Page Element.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001031636161_PageElement Permissions Update.resx">
+      <DependentUpon>202001031636161_PageElement Permissions Update.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

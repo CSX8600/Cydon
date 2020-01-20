@@ -1,0 +1,4 @@
+﻿<config>
+  <unauthenticatedRedirect>https://login.localhostcydonserver.com:44399/CydonHSTS</unauthenticatedRedirect>
+  <cookieDomain>localhostcydonserver.com</cookieDomain>
+</config>

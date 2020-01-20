@@ -1,0 +1,27 @@
+﻿@using Cydon.Data.Security
+@{
+    ViewBag.Title = "SiteEditor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model SitePermissionUser
+<h1>Site Editor</h1>
+<div class="list-group bg-light rounded">
+    @if (Model.CanAddCountries || Model.CanDeleteCountries)
+    {
+        <a class="list-group-item list-group-item-action" href="~/SiteEditor/CountryList">
+            Country Editor
+            <span class="float-right d-inline fas fa-chevron-right"></span>
+        </a>
+    }
+    @if (Model.CanManagePermissions)
+    {
+        <a class="list-group-item list-group-item-action" href="~/SiteEditor/SitePermissionUserList">
+            Site Permissions Editor
+            <span class="float-right d-inline fas fa-chevron-right"></span>
+        </a>
+    }
+    <a class="list-group-item list-group-item-action" href="~/SiteEditor/UserList">
+        User Editor
+        <span class="float-right d-inline fas fa-chevron-right"></span>
+    </a>
+</div>

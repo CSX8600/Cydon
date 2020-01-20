@@ -1,0 +1,133 @@
+﻿@using Cydon.Data.World
+@using Cydon.Data.Security
+@{
+    ViewBag.Title = "CountryRoleDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model CountryRole
+<a href="~/PageEditor/CountryIndex/@Model.CountryID" class="btn btn-primary"><span class="fas fa-chevron-left"></span> Country</a>
+<h4>Role: @Model.Name</h4>
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <div class="nav nav-pills flex-column" role="tablist">
+                <a class="nav-link active" data-toggle="pill" href="#generalTab">General</a>
+                <a class="nav-link" data-toggle="pill" href="#usersTab">Users</a>
+            </div>
+        </div>
+        <div class="col-10">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="generalTab" role="tabpanel">
+                    <div class="bg-light p-1">
+                        @using (Html.BeginForm())
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(cr => cr.CountryRoleID)
+                            <div class="form-group">
+                                @Html.LabelFor(cr => cr.Name)
+                                @Html.TextBoxFor(cr => cr.Name, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(cr => cr.Name, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(cr => cr.CanAddPages, new { @class = "form-check-input" })
+                                    @Html.LabelFor(cr => cr.CanAddPages, new { @class = "form-check-label" })
+                                </div>
+                                @Html.ValidationMessageFor(cr => cr.CanAddPages, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(cr => cr.CanDeletePages, new { @class = "form-check-input" })
+                                    @Html.LabelFor(cr => cr.CanDeletePages, new { @class = "form-check-label" })
+                                </div>
+                                @Html.ValidationMessageFor(cr => cr.CanDeletePages, null, new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    @Html.CheckBoxFor(cr => cr.CanUpdatePermissions, new { @class = "form-check-input" })
+                                    @Html.LabelFor(cr => cr.CanUpdatePermissions, new { @class = "form-check-label" })
+                                </div>
+                                @Html.ValidationMessageFor(cr => cr.CanUpdatePermissions, null, new { @class = "text-danger" })
+                            </div>
+                            <button type="submit" class="btn btn-primary"><span class="fas fa-save"></span> Save</button>
+                        }
+                    </div>
+                </div>
+                <div class="tab-pane fade show" id="usersTab">
+                    <button class="btn btn-primary float-right" type="button"><span class="fas fa-plus-circle"></span> Add</button>
+                    <table class="table bg-light">
+                        <thead>
+                            <tr>
+                                <th width="200px">Options</th>
+                                <th>Username</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(CountryRoleUser countryRoleUser in Model.CountryRoleUsers)
+                            {
+                                <tr>
+                                    <td>
+                                        <button class="btn btn-danger" type="button" onclick="confirmDelete('/PageEditor/CountryRoleUserDelete/@Model.CountryID/@countryRoleUser.CountryRoleUserID');"><span class="fas fa-trash"></span></button>
+                                    </td>
+                                    <td>
+                                        @countryRoleUser.User.Username
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{ Html.RenderPartial("ConfirmDeleteModal", new ViewDataDictionary() { { "ObjectName", "Role User" } }); }
+
+@if (ViewData.ContainsKey("SaveSuccessful"))
+{
+    @section alerts
+    {
+        @if ((bool)ViewData["SaveSuccessful"])
+        {
+            <div class="alert alert-success fade show">
+                <strong>Success</strong> Country Role saved successfully
+                <button class="close" data-dismiss="alert" type="button"><span class="fas fa-times-circle"></span></button>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger fade show">
+                <strong>Error</strong> One or more errors occurred.  Please fix these errors and try again.
+                <button class="close" data-dismiss="alert" type="button"><span class="fas fa-times-circle"></span></button>
+            </div>
+        }
+    }
+}
+
+<div class="modal" role="dialog" id="AddCountryRoleUser">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><strong>Add</strong> User</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="UserID">User</label>
+                    <select id="UserID" name="UserID" class="form-control">
+                        @foreach(User user in (List<User>)ViewData["Users"])
+                        {
+                            <option value="@user.UserID">@user.Username</option>
+                        }
+                    </select>
+                    <label class="text-danger" data-validate-message-for="UserID" />
+                </div>
+                <input type="hidden" name="CountryRoleID" value="@Model.CountryRoleID" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" onclick="$('#AddCountryRoleUser').modal('hide');"><span class="fas fa-ban"></span> Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="modalSave('/PageEditor/CountryRoleUserAdd/@Model.CountryID', $(this));"><span class="fas fa-save"></span> Save</button>
+            </div>
+        </div>
+    </div>
+</div>

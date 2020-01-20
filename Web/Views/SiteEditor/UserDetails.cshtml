@@ -1,0 +1,58 @@
+﻿@model Cydon.Data.Security.User
+
+@{
+    ViewBag.Title = "UserDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<a href="~/SiteEditor/UserList" class="btn btn-primary mb-1"><span class="fas fa-chevron-left"></span> Users</a>
+<div class="col-10 pl-0">
+    <div class="bg-light rounded p-2">
+        <h4>User: @Model.Username</h4>
+        <hr />
+        @using (Html.BeginForm())
+        {
+            @Html.HiddenFor(u => u.UserID)
+            <div class="form-group">
+                @Html.LabelFor(u => u.Username)
+                @if (Model.IsDiscordUser)
+                {
+                    @Html.TextBoxFor(u => u.Username, new { @class = "form-control", disabled = true })
+                }
+                else
+                {
+                    @Html.TextBoxFor(u => u.Username, new { @class = "form-control" })
+                }
+                @Html.ValidationMessageFor(u => u.Username, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    @Html.CheckBoxFor(u => u.IsDiscordUser, new { @class = "form-check-input", disabled = true })
+                    @Html.LabelFor(u => u.IsDiscordUser, new { @class = "form-check-label" })
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary"><span class="fas fa-save"></span> Save</button>
+        }
+    </div>
+</div>
+
+@if (ViewData.ContainsKey("SaveSuccessful"))
+{
+    @section alerts
+    {
+        @if ((bool)ViewData["SaveSuccessful"])
+        {
+            <div class="alert alert-success fade show">
+                <strong>Success</strong> User saved successfully
+                <button type="button" class="close" data-dismiss="alert"><span class="fas fa-times-circle"></span></button>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger fade show">
+                <strong>Error</strong> One or more errors occurred.  Please correct these errors and try again.
+                <button type="button" class="close" data-dismiss="alert"><span class="fas fa-times-circle"></span></button>
+            </div>
+        }
+    }
+}

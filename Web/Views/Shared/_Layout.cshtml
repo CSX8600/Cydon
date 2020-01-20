@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/530d5c05cb.js" crossorigin="anonymous"></script>
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+</head>
+<body>
+    @if (IsSectionDefined("alerts"))
+    {
+        @RenderSection("alerts")
+    }
+    @{ Html.RenderPartial("MainNavigation"); }
+
+    @if (ViewData.ContainsKey("signoutSuccessful") && (bool)ViewData["signoutSuccessful"])
+    {
+        <div class="alert alert-success show fade">
+            You've been signed out successfully
+            <button type="button" class="close" data-dismiss="alert"><span class="fas fa-times-circle"></span></button>
+        </div>
+    }
+
+    <div class="container body-content">
+        <div class="container mt-1">
+            @RenderBody()
+        </div>
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    <div class="modal hide" role="dialog" id="timeoutDialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Warning</h5>
+                    <button type="button" class="close" data-dismiss="modal"><span class="fas fa-times-circle"></span></button>
+                </div>
+                <div class="modal-content">
+                    <p>You've been inactive for <span id="inactiveMinutes"></span> minutes and will be automatically signed out in <span id="inactiveRemainingMinutes"></span> minutes.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="closeSession" class="btn btn-outline-primary"><span class="fas fa-sign-out-alt"></span> Sign Out</button>
+                    <button type="button" id="refreshSession" class="btn btn-primary"><span class="fas fa-sign-in-alt"></span> Stay Signed In</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" id="virtualpath" value="@VirtualPathUtility.ToAbsolute("~")" />
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

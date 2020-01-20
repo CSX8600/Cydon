@@ -1,0 +1,52 @@
+﻿@using Cydon.Data.CySys
+@{
+    ViewBag.Title = "NavigationDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    IEnumerable<Navigation> otherNavigations = (IEnumerable<Navigation>)ViewData["OtherNavigations"];
+    IEnumerable<Cydon.Data.CySys.Page> pages = (IEnumerable<Cydon.Data.CySys.Page>)ViewData["Pages"];
+}
+@model Navigation
+<a href="~/PageEditor/CountryIndex/@ViewContext.RouteData.Values["countryid"]" class="btn btn-primary"><span class="fas fa-chevron-left"></span> Country</a>
+<h4>Navigation: @Model.Text</h4>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(n => n.NavigationID)
+    @Html.HiddenFor(n => n.ParentNavigationID)
+    <div class="bg-light rounded p-1">
+        <div class="form-group">
+            @Html.LabelFor(n => n.PageID)
+            @Html.DropDownListFor(n => n.PageID, pages.Select(p => new SelectListItem() { Text = p.Name, Value = p.PageID.Value.ToString(), Selected = Model.PageID == p.PageID }), new { @class = "form-control" })
+            @Html.ValidationMessageFor(n => n.PageID, null, new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(n => n.Text)
+            @Html.TextBoxFor(n => n.Text, new { @class = "form-control" })
+            @Html.ValidationMessageFor(n => n.Text, null, new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn btn-primary"><span class="fas fa-save"></span> Save</button>
+    </div>
+}
+
+@if (ViewData.ContainsKey("SaveSuccessful"))
+{
+    @section alerts
+    {
+        @if ((bool)ViewData["SaveSuccessful"])
+        {
+            <div class="alert alert-success fade show">
+                <strong>Success</strong> Navigation saved successfully
+                <button type="button" data-dismiss="alert" class="close"><span class="fas fa-times-circle"></span></button>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger fade show">
+                <strong>Error</strong> One or more errors occurred.  Please fix these errors and try again.
+                <button type="button" data-dismiss="alert" class="close"><span class="fas fa-times-circle"></span></button>
+            </div>
+        }
+    }
+}

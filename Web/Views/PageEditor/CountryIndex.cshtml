@@ -1,0 +1,237 @@
+﻿@using Cydon.Data.World
+@using Cydon.Data.CySys
+@using Cydon.Data.Security
+@{
+    ViewBag.Title = "CountryIndex";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    CountryRole Permission = (CountryRole)ViewData["Permission"];
+    Navigation rootNav = Model.Pages.Single(p => p.Navigations.Where(n => n.ParentNavigationID == null).Any()).Navigations.Single(n => n.ParentNavigationID == null);
+    IEnumerable<User> users = (IEnumerable<User>)ViewData["Users"];
+}
+@model Country
+
+<h2>Country - @Model.Name</h2>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <div class="nav flex-column nav-pills" id="CountryTabs" role="tablist">
+                <a class="nav-link active" data-toggle="pill" href="#pagesTab">Pages</a>
+                <a class="nav-link" data-toggle="pill" href="#navigationsTab">Navigations</a>
+                <a class="nav-link" data-toggle="pill" href="#rolesTab">Roles</a>
+            </div>
+        </div>
+        <div class="col-10">
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="pagesTab" role="tabpanel">
+                    @if (Permission.CanAddPages)
+                    {
+                        <button type="button" class="btn btn-primary float-right" onclick="$('#AddPage').modal('show');"><span class="fas fa-plus-circle"></span> Add</button>
+                    }
+                    <table class="table bg-light">
+                        <thead>
+                            <tr>
+                                <th width="200px">Options</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Cydon.Data.CySys.Page page in Model.Pages)
+                            {
+                                <tr>
+                                    <td>
+                                        <a href="~/PageEditor/PageDetails/@Model.CountryID/@page.PageID" class="btn btn-primary"><span class="fas fa-edit"></span></a>
+                                        <button class="btn btn-danger" type="button" onclick="confirmDelete('PageEditor/PageDelete/@Model.CountryID/@page.PageID', 'Page');"><span class="fas fa-trash"></span></button>
+                                    </td>
+                                    <td>@page.Name</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade show" id="navigationsTab" role="tabpanel">
+                    @if (Permission.CanAddPages)
+                    {
+                        <button type="button" class="btn btn-primary float-right" onclick="$('#AddNavigation').modal('show');"><span class="fas fa-plus-circle"></span> Add</button>
+                    }
+                    <div class="bg-light rounded">
+                        <ul>
+                            <li>@rootNav.Text</li>
+                            <ul>
+                                @foreach(Navigation navigation in rootNav.ChildNavigations)
+                                {
+                                    <li>
+                                        @if (Permission.CanAddPages)
+                                        {
+                                            <a href="~/PageEditor/NavigationDetails/@Model.CountryID/@navigation.NavigationID" class="btn btn-primary">@navigation.Text <span class="fas fa-chevron-right"></span></a>
+                                            if (Permission.CanDeletePages)
+                                            {
+                                                <button type="button" class="btn btn-danger" onclick="confirmDelete('/PageEditor/NavigationDelete/@Model.CountryID/@navigation.NavigationID', 'Navigation');"><span class="fas fa-trash"></span></button> 
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @navigation.Text
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-pane fade show" id="rolesTab" role="tabpanel">
+                    @if (Permission.CanUpdatePermissions)
+                    {
+                        <button type="button" class="btn btn-primary float-right" onclick="$('#AddCountryRole').modal('show');"><span class="fas fa-plus-circle"></span> Add</button>
+                    }
+                    <table class="table bg-light">
+                        <thead>
+                            <tr>
+                                <th width="200px">Options</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(CountryRole role in Model.CountryRoles)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (Permission.CanUpdatePermissions)
+                                        {
+                                            <a href="~/PageEditor/CountryRoleDetails/@Model.CountryID/@role.CountryRoleID" class="btn btn-primary"><span class="fas fa-edit"></span></a>
+                                            <button type="button" class="btn btn-danger" onclick="confirmDelete('/PageEditor/CountryRoleDelete/@Model.CountryID/@role.CountryRoleID', 'Role');"><span class="fas fa-trash"></span></button>
+                                        }
+                                    </td>
+                                    <td>@role.Name</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="AddCountryRole" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><strong>Add</strong> Role</h4>
+            </div>
+            <div class="modal-body">
+                <form action="." method="post">
+                    <input type="hidden" name="CountryID" value="@Model.CountryID" />
+                    <div class="form-group">
+                        <label for="@nameof(CountryRole.Name)">Name</label>
+                        <input type="text" id="@nameof(CountryRole.Name)" name="@nameof(CountryRole.Name)" class="form-control" />
+                        <label data-validate-message-for="@nameof(CountryRole.Name)" class="text-danger" />
+                    </div>
+                    <div class="border border-dark">
+                        <h4>Users</h4>
+                        <div class="container" id="CountryRoleUsers">
+
+                        </div>
+                        <div class="text-right">
+                            <button type="button" class="btn btn-primary" onclick="addUser();"><span class="fas fa-plus-circle"></span> Add</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal"><span class="fas fa-ban"></span> Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="modalSave('/PageEditor/CountryRoleAdd/@Model.CountryID', $(this));"><span class="fas fa-save"></span> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="AddNavigation" class="modal fade" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><strong>Add</strong> Navigation</h4>
+            </div>
+            <div class="modal-body">
+                <form action="." method="post">
+                    <div class="form-group">
+                        <label for="@nameof(Navigation.PageID)">Page</label>
+                        <select id="@nameof(Navigation.PageID)" name="@nameof(Navigation.PageID)" class="form-control">
+                            @foreach(Cydon.Data.CySys.Page page in Model.Pages)
+                            {
+                                <option value="@page.PageID">@page.Name</option>
+                            }
+                        </select>
+                        <label data-validate-message-for="@nameof(Navigation.PageID)" class="text-danger" />
+                    </div>
+                    <div class="form-group">
+                        <label for="@nameof(Navigation.Text)">Text</label>
+                        <input type="text" id="@nameof(Navigation.Text)" name="@nameof(Navigation.Text)" class="form-control" />
+                        <label data-validate-message-for="@nameof(Navigation.Text)" class="text-danger" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-outline-primary"><span class="fas fa-ban"></span> Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="modalSave('/PageEditor/NavigationAdd/@Model.CountryID', $(this));"><span class="fas fa-save"></span> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="AddPage" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><strong>Add</strong> Page</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" action=".">
+                    <div class="form-group">
+                        <label for="@nameof(Cydon.Data.CySys.Page.Name)">Name</label>
+                        <input type="text" id="@nameof(Cydon.Data.CySys.Page.Name)" name="@nameof(Cydon.Data.CySys.Page.Name)" class="form-control" />
+                        <label class="text-danger" data-validate-message-for="@nameof(Cydon.Data.CySys.Page.Name)" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" onclick="#('AddPage').modal('hide')"><span class="fas fa-ban"></span> Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="modalSave('/PageEditor/PageAdd/@Model.CountryID', $(this));"><span class="fas fa-save"></span> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{ Html.RenderPartial("ConfirmDeleteModal"); }
+
+@section scripts
+{
+    <script type="text/javascript">
+        function addUser()
+        {
+            var container = $('#CountryRoleUsers');
+            var rowCount = container.children('.row').length;
+
+            var selectList = "";
+
+            @foreach(User user in users)
+            {
+                @:selectList += '<option value="@user.UserID">@user.Username</option>';
+            }
+
+            container.append('<div class="row">' +
+                '<div class="col-11">' +
+                    '<select id="CountryRoleUser-' + rowCount + '" name="CountryRoleUser-' + rowCount + '" class="form-control">' + selectList + '</select>' + 
+                '</div >' + 
+                '<div class="col-1">' +
+                    '<button type="button" class="btn btn-danger" onclick="removeUser(' + rowCount + ');"><span class="fas fa-trash"></span></button>' +
+                '</div>');
+        }
+
+        function removeUser(rowNumber)
+        {
+            var row = $('#CountryRoleUser-' + rowNumber).closest('.row');
+            row.remove();
+        }
+    </script>
+}

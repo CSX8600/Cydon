@@ -1,0 +1,25 @@
+﻿@using Cydon.Data.World
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model IEnumerable<Country>
+
+<h2>Page Editor</h2>
+<hr />
+@if (Model.Any())
+{
+    <h4>Select a Country you would like to edit</h4>
+    <div class="list-group bg-light rounded">
+        @foreach(Country country in Model)
+        {
+            <a class="list-group-item list-group-item-action" href="~/PageEditor/CountryIndex/@country.CountryID">@country.Name<span class="fas fa-chevron-right d-inline float-right"></span></a>
+        }
+    </div>
+}
+else
+{
+    <div class="bg-light">
+        <h4>You do not currently have access to any Countries</h4>
+    </div>
+}

@@ -1,0 +1,75 @@
+﻿@using Cydon.Data.World
+@using Cydon.Data.Security
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    SitePermissionUser permission = (SitePermissionUser)ViewData["Permission"];
+}
+@model List<Country>
+
+<a href="~/SiteEditor" class="btn btn-primary mt-2"><span class="fas fa-chevron-left"></span> Site Editor</a>
+
+<div>
+    @if (permission.CanAddCountries)
+    {
+        <button onclick="$('#AddCountry').modal('show');" class="btn btn-primary float-right"><span class="fas fa-plus-circle"></span> Add</button>
+    }
+    <h2>Countries</h2>
+    <div class="bg-light rounded">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th width="150px">
+                        Options
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(Country country in Model)
+                {
+                    <tr>
+                        <td>
+                            <a class="btn btn-primary" href="~/SiteEditor/CountryDetails/@country.CountryID"><span class="fas fa-edit"></span></a>
+                            @if (permission.CanDeleteCountries)
+                            {
+                                <button class="btn btn-danger" type="button" onclick="confirmDelete('SiteEditor/CountryDelete/@country.CountryID');"><span class="fas fa-trash"></span></button>
+                            }
+                        </td>
+                        <td>
+                            @country.Name
+                        </td>
+                        <td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" role="dialog" id="AddCountry">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><strong>Add</strong> Country</h4> 
+            </div>
+            <div class="modal-body">
+                <form method="post" action=".">
+                    <div class="form-group">
+                        <label for="@nameof(Country.Name)">Name</label>
+                        <input type="text" class="form-control" id="@nameof(Country.Name)" name="@nameof(Country.Name)" />
+                        <label data-validate-message-for="@nameof(Country.Name)" class="text-danger" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-primary" data-dismiss="modal"><span class="fas fa-ban"></span> Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="modalSave(/'SiteEditor/CountryAdd', $(this));"><span class="fas fa-save"></span> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{ Html.RenderPartial("ConfirmDeleteModal", new ViewDataDictionary() { { "ObjectName", "Country" } }); }

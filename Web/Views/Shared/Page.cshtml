@@ -1,0 +1,7 @@
+﻿@{
+    ViewBag.Title = "Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model Cydon.Data.CySys.Page
+
+@{ Html.RenderPartial("PageContent", Model.PageID) }

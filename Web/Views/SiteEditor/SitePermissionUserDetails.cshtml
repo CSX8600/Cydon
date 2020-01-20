@@ -1,0 +1,75 @@
+﻿@using Cydon.Data.Security
+@{
+    ViewBag.Title = "SitePermissionUserDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    IEnumerable<User> users = (IEnumerable<User>)ViewData["AvailableUsers"];
+}
+@model SitePermissionUser
+
+<a href="~/SiteEditor/SitePermissionUserList" class="btn btn-primary mb-2"><span class="fas fa-chevron-left"></span> Site Permission Users</a>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="bg-light rounded p-1">
+        <h4>Site Permission User: @Model.User.Username</h4>
+        <hr />
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        @Html.HiddenFor(spu => spu.SitePermissionUserID)
+        @if (Model.SitePermissionUserID != null)
+        {
+            @Html.HiddenFor(spu => spu.UserID)
+        }
+
+        <div class="form-group">
+            @Html.LabelFor(spu => spu.UserID, "User")
+            @Html.DropDownListFor(spu => spu.UserID, users.Select(u => new SelectListItem() { Text = u.Username, Value = u.UserID.ToString(), Selected = u.UserID == Model?.UserID }), Model.SitePermissionUserID != null ? new { @class = "form-control", disabled = "disabled" } as object : new { @class = "form-control" } as object)
+            @Html.ValidationMessageFor(spu => spu.UserID, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                @Html.CheckBoxFor(spu => spu.CanAddCountries, new { @class = "form-check-input" })
+                @Html.LabelFor(spu => spu.CanAddCountries, "Can Add Countries?", new { @class = "form-check-label" })
+            </div>
+            @Html.ValidationMessageFor(spu => spu.CanAddCountries, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                @Html.CheckBoxFor(spu => spu.CanDeleteCountries, new { @class = "form-check-input" })
+                @Html.LabelFor(spu => spu.CanDeleteCountries, "Can Delete Countries?", new { @class = "form-check-label" })
+            </div>
+            @Html.ValidationMessageFor(spu => spu.CanDeleteCountries, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group">
+            <div class="form-check">
+                @Html.CheckBoxFor(spu => spu.CanManagePermissions, new { @class = "form-check-input" })
+                @Html.LabelFor(spu => spu.CanManagePermissions, "Can Manage Permissions?", new { @class = "form-check-label" })
+            </div>
+            @Html.ValidationMessageFor(spu => spu.CanManagePermissions, "", new { @class = "text-danger" })
+        </div>
+
+        <button type="submit" class="btn btn-primary"><span class="fas fa-save"></span> Save</button>
+    </div>
+}
+
+@if (ViewData.ContainsKey("SaveSuccessful"))
+{
+    @section alerts
+    {
+        @if ((bool)ViewData["SaveSuccessful"])
+        {
+            <div class="alert alert-dismissible alert-success fade show" role="alert">
+                <strong>Success</strong> Site Permission User has been saved successfully
+                <button type="button" data-dismiss="alert" class="close"><span class="fas fa-times-circle"></span></button>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-dismissible alert-danger fade show" role="alert">
+                One or more errors occurred. Please correct these errors and try saving again.
+                <button type="button" data-dismiss="alert" class="close"><span class="fas fa-times-circle"></span></button>
+            </div>
+        }
+    }
+}

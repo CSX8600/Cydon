@@ -1,0 +1,93 @@
+﻿@using Cydon.Data.Security
+@{
+    ViewBag.Title = "SitePermissionUserList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    IEnumerable<User> users = (IEnumerable<User>)ViewData["AvailableUsers"];
+}
+@model List<SitePermissionUser>
+
+<a href="~/SiteEditor" class="btn btn-primary mb-2"><span class="fas fa-chevron-left"></span> Site Editor</a>
+
+<div>
+    <button type="button" onclick="$('#AddSitePermissionUser').modal('show');" class="btn btn-primary float-right"><span class="fas fa-plus-circle"></span> Add</button>
+    <h2>Site Permission Users</h2>
+    <div class="bg-light rounded">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th width="150px">
+                        Options
+                    </th>
+                    <th>
+                        Username
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (SitePermissionUser sitePermissionUser in Model)
+                {
+                    <tr>
+                        <td>
+                            <a href="@VirtualPathUtility.ToAbsolute("~/SiteEditor/SitePermissionUserDetails/" + sitePermissionUser.SitePermissionUserID)" class="btn btn-primary"><span class="fas fa-edit"></span></a>
+                            <button type="button" class="btn btn-danger" onclick="confirmDelete('SiteEditor/SitePermissionUserDelete/@sitePermissionUser.SitePermissionUserID');"><span class="fas fa-trash"></span></button>
+                        </td>
+                        <td>
+                            @sitePermissionUser.User.Username
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="AddSitePermissionUser" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-title">
+                <h4 class="modal-title"><strong>Add</strong> Site Permission User</h4>
+            </div>
+            <div class="modal-body">
+                <form action="." method="post">
+                    <div class="form-group">
+                        <label for="@nameof(SitePermissionUser.UserID)">User</label>
+                        <select name="@nameof(SitePermissionUser.UserID)" id="@nameof(SitePermissionUser.UserID)" class="form-control">
+                            @foreach (User user in users)
+                            {
+                                <option value="@user.UserID">@user.Username</option>
+                            }
+                        </select>
+                        <label data-validate-message-for="@nameof(SitePermissionUser.UserID)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input type="checkbox" id="@nameof(SitePermissionUser.CanAddCountries)" name="@nameof(SitePermissionUser.CanAddCountries)" class="form-check-input" />
+                            <label for="@nameof(SitePermissionUser.CanAddCountries)" class="form-check-label">Can Add Countries?</label>
+                        </div>
+                        <label class="text-danger" data-validate-message-for="@nameof(SitePermissionUser.CanAddCountries)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input type="checkbox" id="@nameof(SitePermissionUser.CanDeleteCountries)" name="@nameof(SitePermissionUser.CanDeleteCountries)" class="form-check-input" />
+                            <label for="@nameof(SitePermissionUser.CanDeleteCountries)" class="form-check-label">Can Delete Countries?</label>
+                        </div>
+                        <label class="text-danger" data-validate-message-for="@nameof(SitePermissionUser.CanDeleteCountries)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input type="checkbox" id="@nameof(SitePermissionUser.CanManagePermissions)" name="@nameof(SitePermissionUser.CanManagePermissions)" class="form-check-input" />
+                            <label for="@nameof(SitePermissionUser.CanManagePermissions)" class="form-check-label">Can Manage Permissions?</label>
+                        </div>
+                        <label class="text-danger" data-validate-message-for="@nameof(SitePermissionUser.CanManagePermissions)" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-primary" type="button" data-dismiss="modal"><span class="fas fa-ban"></span> Cancel</button>
+                <button class="btn btn-primary" type="button" onclick="modalSave('/SiteEditor/SitePermissionUserAdd', $(this))"><span class="fas fa-save"></span> Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{  Html.RenderPartial("ConfirmDeleteModal", new ViewDataDictionary() { { "ObjectName", "Site Permission User" } }); }

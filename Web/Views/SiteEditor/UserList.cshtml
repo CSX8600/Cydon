@@ -1,0 +1,44 @@
+﻿@using Cydon.Data.Security
+@{
+    ViewBag.Title = "UserList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model List<User>
+<a href="~/SiteEditor" class="btn btn-primary"><span class="fas fa-chevron-left"></span> Site Editor</a>
+<h2>Users</h2>
+<div class="container bg-light rounded">
+    <table class="table">
+        <thead>
+            <tr>
+                <td width="150px">
+                    Options
+                </td>
+                <td>
+                    Username
+                </td>
+                <td>
+                    Discord User
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(User user in Model)
+            {
+                <tr>
+                    <td>
+                        <a href="~/SiteEditor/UserDetails/@user.UserID" class="btn btn-primary"><span class="fas fa-edit"></span></a>
+                        <button type="button" onclick="confirmDelete('SiteEditor/UserDelete/@user.UserID');" class="btn btn-danger"><span class="fas fa-trash-alt"></span></button>
+                    </td>
+                    <td>
+                        @user.Username
+                    </td>
+                    <td>
+                        <input type="checkbox" disabled @if (user.IsDiscordUser) { WriteLiteral("checked");  } />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@{ Html.RenderPartial("ConfirmDeleteModal", new ViewDataDictionary() { { "ObjectName", "User" } }); }
